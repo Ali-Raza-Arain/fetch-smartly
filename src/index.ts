@@ -36,3 +36,5 @@ export { computeDelay } from './retry/backoff.js';
 export { DedupManager, getDedupKey, isDedupEligible } from './state/dedup.js';
 export { CircuitBreaker, CircuitOpenError } from './state/circuit-breaker.js';
 export type { CircuitState } from './state/circuit-breaker.js';
+export { OfflineQueue, MemoryStorage, LocalStorageBackend } from './state/offline-queue.js';
+export type { QueueStorage, QueueEntry } from './state/offline-queue.js';
