@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import { DedupManager, getDedupKey, isDedupEligible } from '../src/state/dedup.js';
 import type { SmartFetchResponse } from '../src/types/index.js';
 
@@ -61,7 +60,6 @@ describe('DedupManager', () => {
 
     mgr.track('k', promise);
     await promise;
-    // Allow microtask (then cleanup) to run
     await Promise.resolve();
 
     expect(mgr.size).toBe(0);
@@ -81,7 +79,6 @@ describe('DedupManager', () => {
   it('does not remove entry if a newer promise replaced it', async () => {
     const mgr = new DedupManager();
     const first = Promise.resolve(fakeResponse('first'));
-    // Second promise stays pending so its cleanup hasn't fired
     const second = new Promise<SmartFetchResponse<unknown>>(() => {});
 
     mgr.track('k', first);
@@ -90,7 +87,6 @@ describe('DedupManager', () => {
     await first;
     await Promise.resolve();
 
-    // First's cleanup should not remove the second entry
     expect(mgr.size).toBe(1);
     expect(mgr.get('k')).toBe(second);
   });

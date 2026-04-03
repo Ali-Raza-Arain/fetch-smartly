@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/npm/v/smart-fetch?style=for-the-badge&color=blue&label=smart-fetch" alt="version" />
+  <img src="https://img.shields.io/npm/v/smart-fetch?style=color=blue&label=smart-fetch" alt="version" />
 </p>
 
 <h1 align="center">smart-fetch</h1>
@@ -10,11 +10,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="license" />
-  <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=for-the-badge" alt="node" />
-  <img src="https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="typescript" />
-  <img src="https://img.shields.io/badge/tests-86%20passed-green?style=for-the-badge&logo=vitest&logoColor=white" alt="tests" />
-  <a href="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch"><img src="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch/branch/main/graph/badge.svg?style=for-the-badge" alt="codecov" /></a>
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="license" />
+  <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="node" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-blue" alt="typescript" />
+  <img src="https://img.shields.io/badge/tests-86%20passed-green" alt="tests" />
+  <a href="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch"><img src="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch/branch/main/graph/badge.svg" alt="codecov" /></a>
 </p>
 
 ---

@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fetchWithRetry } from '../src/retry/orchestrator.js';
 import { isRetryable, getServerRetryDelay, classifyFailure } from '../src/retry/analyzer.js';
 import { computeDelay } from '../src/retry/backoff.js';
@@ -15,6 +14,8 @@ function jsonResponse(body: object, status = 200): Response {
     headers: { 'content-type': 'application/json' },
   });
 }
+
+const fetchMock = jest.fn<typeof globalThis.fetch>();
 
 // ─── Analyzer Tests ───
 
@@ -106,9 +107,9 @@ describe('computeDelay', () => {
 
   it('applies jitter (result is between 0 and capped delay)', () => {
     const policy = { ...DEFAULT_RETRY_POLICY, jitter: true, baseDelay: 1000, backoffFactor: 2 };
-    vi.spyOn(Math, 'random').mockReturnValue(0.5);
-    expect(computeDelay(0, policy)).toBe(500); // 0.5 * 1000
-    vi.restoreAllMocks();
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+    expect(computeDelay(0, policy)).toBe(500);
+    jest.restoreAllMocks();
   });
 
   it('uses server delay when provided', () => {
@@ -126,49 +127,49 @@ describe('computeDelay', () => {
 
 describe('fetchWithRetry', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.stubGlobal('fetch', vi.fn());
+    jest.useFakeTimers();
+    globalThis.fetch = fetchMock;
   });
 
   afterEach(() => {
-    vi.useRealTimers();
-    vi.restoreAllMocks();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
+    fetchMock.mockReset();
   });
 
   it('returns on first success without retrying', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ ok: true }));
+    fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
 
     const result = await fetchWithRetry({ url: 'https://example.com', retry: { maxRetries: 3 } });
     expect(result.ok).toBe(true);
     expect(result.retries).toBe(0);
-    expect(fetch).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('retries on 503 and succeeds', async () => {
-    vi.mocked(fetch)
+    fetchMock
       .mockResolvedValueOnce(new Response('err', { status: 503, statusText: 'Unavailable' }))
       .mockResolvedValueOnce(jsonResponse({ ok: true }));
 
-    const onRetry = vi.fn();
+    const onRetry = jest.fn();
     const promise = fetchWithRetry({
       url: 'https://example.com',
       retry: { maxRetries: 3, jitter: false, baseDelay: 100 },
       onRetry,
     });
 
-    // Advance past the backoff delay
-    await vi.advanceTimersByTimeAsync(200);
+    await jest.advanceTimersByTimeAsync(200);
     const result = await promise;
 
     expect(result.ok).toBe(true);
     expect(result.retries).toBe(1);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(onRetry).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRetry.mock.calls[0]![0]).toMatchObject({ attempt: 1 });
   });
 
   it('does NOT retry 4xx errors by default', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       new Response('bad', { status: 400, statusText: 'Bad Request' }),
     );
 
@@ -178,77 +179,73 @@ describe('fetchWithRetry', () => {
     }).catch((e: unknown) => e);
 
     expect(err).toBeInstanceOf(HttpError);
-    expect(fetch).toHaveBeenCalledOnce(); // no retries
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('does NOT retry 401', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       new Response('unauth', { status: 401, statusText: 'Unauthorized' }),
     );
 
     await expect(fetchWithRetry({ url: 'https://example.com', retry: { maxRetries: 3 } }))
       .rejects.toBeInstanceOf(HttpError);
-    expect(fetch).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('does NOT retry 404', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       new Response('not found', { status: 404, statusText: 'Not Found' }),
     );
 
     await expect(fetchWithRetry({ url: 'https://example.com', retry: { maxRetries: 3 } }))
       .rejects.toBeInstanceOf(HttpError);
-    expect(fetch).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('throws last error when all retries exhausted', async () => {
-    vi.mocked(fetch)
-      .mockResolvedValue(new Response('err', { status: 500, statusText: 'ISE' }));
+    fetchMock.mockResolvedValue(new Response('err', { status: 500, statusText: 'ISE' }));
 
     const promise = fetchWithRetry({
       url: 'https://example.com',
       retry: { maxRetries: 2, jitter: false, baseDelay: 100 },
     }).catch((e: unknown) => e);
 
-    // Advance through all retry delays
-    await vi.advanceTimersByTimeAsync(500);
+    await jest.advanceTimersByTimeAsync(500);
     const err = await promise;
 
     expect(err).toBeInstanceOf(HttpError);
     expect((err as HttpError).status).toBe(500);
-    expect(fetch).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it('respects Retry-After header on 429', async () => {
-    vi.mocked(fetch)
+    fetchMock
       .mockResolvedValueOnce(
         new Response('rate limited', {
           status: 429,
           statusText: 'Too Many Requests',
-          headers: { 'retry-after': '2' }, // 2 seconds
+          headers: { 'retry-after': '2' },
         }),
       )
       .mockResolvedValueOnce(jsonResponse({ ok: true }));
 
-    const onRetry = vi.fn();
+    const onRetry = jest.fn();
     const promise = fetchWithRetry({
       url: 'https://example.com',
       retry: { maxRetries: 3, jitter: false, baseDelay: 100 },
       onRetry,
     });
 
-    // The delay should be 2000ms (from Retry-After), not 100ms (baseDelay)
-    await vi.advanceTimersByTimeAsync(2100);
+    await jest.advanceTimersByTimeAsync(2100);
     const result = await promise;
 
     expect(result.ok).toBe(true);
-    expect(onRetry).toHaveBeenCalledOnce();
+    expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRetry.mock.calls[0]![0].delay).toBe(2000);
   });
 
   it('respects shouldRetry override to stop retrying', async () => {
-    vi.mocked(fetch)
-      .mockResolvedValue(new Response('err', { status: 500, statusText: 'ISE' }));
+    fetchMock.mockResolvedValue(new Response('err', { status: 500, statusText: 'ISE' }));
 
     const promise = fetchWithRetry({
       url: 'https://example.com',
@@ -256,20 +253,19 @@ describe('fetchWithRetry', () => {
         maxRetries: 5,
         jitter: false,
         baseDelay: 50,
-        shouldRetry: (ctx) => ctx.attempt < 2, // only allow 1 retry
+        shouldRetry: (ctx) => ctx.attempt < 2,
       },
     }).catch((e: unknown) => e);
 
-    // Advance past the first retry delay
-    await vi.advanceTimersByTimeAsync(200);
+    await jest.advanceTimersByTimeAsync(200);
     const err = await promise;
 
     expect(err).toBeInstanceOf(HttpError);
-    expect(fetch).toHaveBeenCalledTimes(2); // 1 initial + 1 retry, then shouldRetry returned false
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('retries on NetworkError', async () => {
-    vi.mocked(fetch)
+    fetchMock
       .mockRejectedValueOnce(new TypeError('fetch failed'))
       .mockResolvedValueOnce(jsonResponse({ recovered: true }));
 
@@ -278,11 +274,11 @@ describe('fetchWithRetry', () => {
       retry: { maxRetries: 2, jitter: false, baseDelay: 50 },
     });
 
-    await vi.advanceTimersByTimeAsync(100);
+    await jest.advanceTimersByTimeAsync(100);
     const result = await promise;
 
     expect(result.ok).toBe(true);
     expect(result.data).toEqual({ recovered: true });
-    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

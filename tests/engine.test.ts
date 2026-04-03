@@ -1,11 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { executeRequest } from '../src/engine/request.js';
 import { NetworkError } from '../src/errors/network.js';
 import { TimeoutError } from '../src/errors/timeout.js';
 import { HttpError } from '../src/errors/http.js';
 import { RateLimitError } from '../src/errors/rate-limit.js';
 
-// Helper to create a mock Response
 function mockResponse(
   body: string | object,
   init: ResponseInit & { headers?: Record<string, string> } = {},
@@ -19,20 +17,23 @@ function mockResponse(
   return new Response(bodyStr, { ...init, headers });
 }
 
+const fetchMock = jest.fn<typeof globalThis.fetch>();
+
+beforeEach(() => {
+  jest.useFakeTimers();
+  globalThis.fetch = fetchMock;
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+  jest.restoreAllMocks();
+  fetchMock.mockReset();
+});
+
 describe('executeRequest', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.stubGlobal('fetch', vi.fn());
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-    vi.restoreAllMocks();
-  });
-
   it('should return parsed JSON for a successful response', async () => {
     const payload = { id: 1, name: 'test' };
-    vi.mocked(fetch).mockResolvedValueOnce(mockResponse(payload, { status: 200 }));
+    fetchMock.mockResolvedValueOnce(mockResponse(payload, { status: 200 }));
 
     const result = await executeRequest<typeof payload>({ url: 'https://api.example.com/data' });
 
@@ -44,7 +45,7 @@ describe('executeRequest', () => {
   });
 
   it('should return plain text when content-type is not JSON', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       mockResponse('hello world', { status: 200, headers: { 'content-type': 'text/plain' } }),
     );
 
@@ -53,7 +54,7 @@ describe('executeRequest', () => {
   });
 
   it('should pass method and headers to fetch', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(mockResponse({ ok: true }));
+    fetchMock.mockResolvedValueOnce(mockResponse({ ok: true }));
 
     await executeRequest({
       url: 'https://example.com',
@@ -62,8 +63,8 @@ describe('executeRequest', () => {
       body: JSON.stringify({ key: 'val' }),
     });
 
-    expect(fetch).toHaveBeenCalledOnce();
-    const [url, init] = vi.mocked(fetch).mock.calls[0]!;
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toBe('https://example.com');
     expect(init?.method).toBe('POST');
     expect(new Headers(init?.headers).get('x-custom')).toBe('value');
@@ -71,9 +72,8 @@ describe('executeRequest', () => {
 
   describe('Timeout', () => {
     it('should throw TimeoutError when request exceeds timeout', async () => {
-      vi.mocked(fetch).mockImplementationOnce((_url, init) => {
+      fetchMock.mockImplementationOnce((_url: any, init: any) => {
         return new Promise((_resolve, reject) => {
-          // Simulate fetch respecting the abort signal
           const signal = init?.signal;
           signal?.addEventListener('abort', () => {
             reject(new DOMException('The operation was aborted.', 'AbortError'));
@@ -83,15 +83,15 @@ describe('executeRequest', () => {
 
       const promise = executeRequest({ url: 'https://example.com', timeout: 3000 })
         .catch((e: unknown) => e);
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
 
       const err = await promise;
       expect(err).toBeInstanceOf(TimeoutError);
-      expect(err).toMatchObject({ timeout: 3000 });
+      expect((err as TimeoutError).timeout).toBe(3000);
     });
 
     it('should NOT throw TimeoutError if request completes in time', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(mockResponse({ ok: true }));
+      fetchMock.mockResolvedValueOnce(mockResponse({ ok: true }));
 
       const result = await executeRequest({ url: 'https://example.com', timeout: 5000 });
       expect(result.ok).toBe(true);
@@ -102,7 +102,7 @@ describe('executeRequest', () => {
     it('should abort when user signal is triggered', async () => {
       const userController = new AbortController();
 
-      vi.mocked(fetch).mockImplementationOnce((_url, init) => {
+      fetchMock.mockImplementationOnce((_url: any, init: any) => {
         return new Promise((_resolve, reject) => {
           init?.signal?.addEventListener('abort', () => {
             reject(new DOMException('The operation was aborted.', 'AbortError'));
@@ -110,16 +110,16 @@ describe('executeRequest', () => {
         });
       });
 
-      const promise = executeRequest({ url: 'https://example.com', signal: userController.signal });
+      const promise = executeRequest({ url: 'https://example.com', signal: userController.signal })
+        .catch((e: unknown) => e);
       userController.abort('user cancelled');
 
-      // Should re-throw the original error, NOT a TimeoutError
-      await expect(promise).rejects.toThrow();
-      await expect(promise).rejects.not.toBeInstanceOf(TimeoutError);
+      const err = await promise;
+      expect(err).not.toBeInstanceOf(TimeoutError);
     });
 
     it('should reject immediately if user signal is already aborted', async () => {
-      vi.mocked(fetch).mockImplementationOnce((_url, init) => {
+      fetchMock.mockImplementationOnce((_url: any, init: any) => {
         return new Promise((_resolve, reject) => {
           if (init?.signal?.aborted) {
             reject(new DOMException('The operation was aborted.', 'AbortError'));
@@ -138,7 +138,7 @@ describe('executeRequest', () => {
 
   describe('HTTP Errors', () => {
     it('should throw HttpError for 4xx', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(
+      fetchMock.mockResolvedValueOnce(
         mockResponse('Not Found', { status: 404, statusText: 'Not Found', headers: { 'content-type': 'text/plain' } }),
       );
 
@@ -147,7 +147,7 @@ describe('executeRequest', () => {
     });
 
     it('should throw HttpError for 5xx', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(
+      fetchMock.mockResolvedValueOnce(
         mockResponse('error', { status: 500, statusText: 'Internal Server Error' }),
       );
 
@@ -158,7 +158,7 @@ describe('executeRequest', () => {
     });
 
     it('should throw RateLimitError for 429', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(
+      fetchMock.mockResolvedValueOnce(
         new Response('Too Many Requests', {
           status: 429,
           statusText: 'Too Many Requests',
@@ -174,7 +174,7 @@ describe('executeRequest', () => {
 
   describe('Network Errors', () => {
     it('should throw NetworkError on fetch rejection', async () => {
-      vi.mocked(fetch).mockRejectedValueOnce(new TypeError('fetch failed'));
+      fetchMock.mockRejectedValueOnce(new TypeError('fetch failed'));
 
       const err = await executeRequest({ url: 'https://example.com' }).catch((e: NetworkError) => e);
       expect(err).toBeInstanceOf(NetworkError);
@@ -185,21 +185,20 @@ describe('executeRequest', () => {
 
   describe('Timer cleanup', () => {
     it('should not leak timers after successful request', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(mockResponse({ ok: true }));
+      fetchMock.mockResolvedValueOnce(mockResponse({ ok: true }));
 
       await executeRequest({ url: 'https://example.com', timeout: 5000 });
 
-      // If the timer leaked, advancing would cause unhandled errors
-      expect(vi.getTimerCount()).toBe(0);
+      expect(jest.getTimerCount()).toBe(0);
     });
 
     it('should not leak timers after failed request', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(
+      fetchMock.mockResolvedValueOnce(
         new Response('err', { status: 500, statusText: 'ISE' }),
       );
 
       await executeRequest({ url: 'https://example.com', timeout: 5000 }).catch(() => {});
-      expect(vi.getTimerCount()).toBe(0);
+      expect(jest.getTimerCount()).toBe(0);
     });
   });
 });

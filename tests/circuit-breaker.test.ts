@@ -1,10 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CircuitBreaker, CircuitOpenError } from '../src/state/circuit-breaker.js';
 
-describe('CircuitBreaker', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
+beforeEach(() => { jest.useFakeTimers(); });
+afterEach(() => { jest.useRealTimers(); });
 
+describe('CircuitBreaker', () => {
   it('starts in closed state', () => {
     const cb = new CircuitBreaker({ enabled: true });
     expect(cb.getState()).toBe('closed');
@@ -48,7 +47,7 @@ describe('CircuitBreaker', () => {
 
     try {
       cb.allowRequest('https://example.com', 'GET');
-      expect.unreachable('should have thrown');
+      throw new Error('should have thrown');
     } catch (err) {
       expect(err).toBeInstanceOf(CircuitOpenError);
       const e = err as CircuitOpenError;
@@ -66,7 +65,7 @@ describe('CircuitBreaker', () => {
     cb.onFailure();
     expect(cb.getState()).toBe('open');
 
-    vi.advanceTimersByTime(5000);
+    jest.advanceTimersByTime(5000);
     expect(cb.getState()).toBe('half-open');
   });
 
@@ -78,18 +77,16 @@ describe('CircuitBreaker', () => {
       halfOpenMaxAttempts: 1,
     });
     cb.onFailure();
-    vi.advanceTimersByTime(1000);
+    jest.advanceTimersByTime(1000);
 
-    // First request should be allowed
     expect(() => cb.allowRequest('https://example.com', 'GET')).not.toThrow();
-    // Second should be rejected (only 1 half-open attempt allowed)
     expect(() => cb.allowRequest('https://example.com', 'GET')).toThrow(CircuitOpenError);
   });
 
   it('closes circuit on success in half-open state', () => {
     const cb = new CircuitBreaker({ enabled: true, failureThreshold: 1, resetTimeout: 1000 });
     cb.onFailure();
-    vi.advanceTimersByTime(1000);
+    jest.advanceTimersByTime(1000);
     expect(cb.getState()).toBe('half-open');
 
     cb.allowRequest('https://example.com', 'GET');
@@ -102,7 +99,7 @@ describe('CircuitBreaker', () => {
   it('re-opens circuit on failure in half-open state', () => {
     const cb = new CircuitBreaker({ enabled: true, failureThreshold: 1, resetTimeout: 1000 });
     cb.onFailure();
-    vi.advanceTimersByTime(1000);
+    jest.advanceTimersByTime(1000);
     expect(cb.getState()).toBe('half-open');
 
     cb.allowRequest('https://example.com', 'GET');
@@ -141,23 +138,19 @@ describe('CircuitBreaker', () => {
       halfOpenMaxAttempts: 1,
     });
 
-    // Closed → accumulate failures
     cb.onFailure();
     expect(cb.getState()).toBe('closed');
     cb.onFailure();
     expect(cb.getState()).toBe('open');
 
-    // Open → wait for reset
     expect(() => cb.allowRequest('u', 'GET')).toThrow(CircuitOpenError);
-    vi.advanceTimersByTime(3000);
+    jest.advanceTimersByTime(3000);
     expect(cb.getState()).toBe('half-open');
 
-    // Half-open → probe succeeds
     cb.allowRequest('u', 'GET');
     cb.onSuccess();
     expect(cb.getState()).toBe('closed');
 
-    // Back to normal
     expect(() => cb.allowRequest('u', 'GET')).not.toThrow();
   });
 });

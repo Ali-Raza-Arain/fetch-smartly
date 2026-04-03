@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from 'vitest';
 import { OfflineQueue, MemoryStorage } from '../src/state/offline-queue.js';
 import type { QueueEntry } from '../src/state/offline-queue.js';
 
@@ -87,7 +86,7 @@ describe('OfflineQueue', () => {
       q.enqueue({ url: 'https://a.com', method: 'POST', body: '1' });
       q.enqueue({ url: 'https://b.com', method: 'POST', body: '2' });
 
-      const executor = vi.fn().mockResolvedValue(undefined);
+      const executor = jest.fn().mockResolvedValue(undefined);
       const count = await q.replay(executor);
 
       expect(count).toBe(2);
@@ -100,9 +99,9 @@ describe('OfflineQueue', () => {
       q.enqueue({ url: 'https://a.com' });
       q.enqueue({ url: 'https://b.com' });
 
-      const executor = vi.fn()
-        .mockResolvedValueOnce(undefined)       // first succeeds
-        .mockRejectedValueOnce(new Error('fail')); // second fails
+      const executor = jest.fn()
+        .mockResolvedValueOnce(undefined)
+        .mockRejectedValueOnce(new Error('fail'));
 
       const count = await q.replay(executor);
 
@@ -113,7 +112,7 @@ describe('OfflineQueue', () => {
 
     it('returns 0 when queue is empty', async () => {
       const q = new OfflineQueue();
-      const count = await q.replay(vi.fn());
+      const count = await q.replay(jest.fn());
       expect(count).toBe(0);
     });
   });

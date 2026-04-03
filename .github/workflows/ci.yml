@@ -31,9 +31,7 @@ jobs:
         run: npm run lint
 
       - name: Test with coverage
-        run: npx vitest run --reporter=json --outputFile=test-results.json --coverage --coverage.reporter=json --coverage.reporter=text
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
+        run: npx jest --coverage --coverageReporters=json --coverageReporters=text --json --outputFile=test-results.json
 
       - name: Upload coverage reports to Codecov
         if: matrix.node-version == 22
