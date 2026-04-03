@@ -2,20 +2,32 @@
 
 ## Author
 
-**Ali Raza** — [GitHub](https://github.com/Ali-Raza-Arain)
+**Ali Raza** — Software Engineer & Open-Source Developer
+- GitHub: [Ali-Raza-Arain](https://github.com/Ali-Raza-Arain)
+- LinkedIn: [Ali-Raza-Arain](https://linkedin.com/in/ali-raza-arain)
+
 
 ## Support This Project
 
-If smart-fetch helps you, consider supporting its development:
+If **smart-fetch** helps you, consider supporting its development:
 
-<a href="https://github.com/sponsors/Ali-Raza-Arain">GitHub Sponsors</a> |
-<a href="https://buymeacoffee.com/alirazaarain">Buy Me a Coffee</a>
 
-## Acknowledgments
+<a href="https://github.com/sponsors/Ali-Raza-Arain" target="_blank">
+  <img src="https://img.shields.io/badge/Sponsor_on_GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors" />
+</a>
 
-- Built on the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) standard
-- Circuit breaker pattern inspired by [Michael Nygard's Release It!](https://pragprog.com/titles/mnee2/release-it-second-edition/)
-- Exponential backoff with jitter based on [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/)
+<a href="https://buymeacoffee.com/alirazaarain" target="_blank">
+  <img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee" />
+</a>
+
+## Contributors
+
+<a href="https://github.com/Ali-Raza-Arain/smart-fetch/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Ali-Raza-Arain/smart-fetch" alt="Contributors" />
+</a>
+
+Want to contribute? Check out the [GitHub repository](https://github.com/Ali-Raza-Arain/smart-fetch).
+
 
 ## License
 

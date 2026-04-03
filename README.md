@@ -351,8 +351,8 @@ If this package helps you, consider supporting its development:
 
 ## Contributors
 
-<a href="https://github.com/Ali-Raza-Arain/smart-fetch/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Ali-Raza-Arain/smart-fetch" alt="Contributors" />
+<a href="https://github.com/ali-raza-arain/smart-fetch/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ali-raza-arain/smart-fetch" alt="Contributors" />
 </a>
 
 ---
