@@ -1,5 +1,5 @@
 {
-  "name": "smart-fetch",
+  "name": "fetch-smartly",
   "version": "1.0.0",
   "description": "Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers",
   "type": "module",
@@ -51,17 +51,17 @@
     "typescript",
     "fetch-wrapper",
     "resilient-http",
-    "smart-fetch",
+    "fetch-smartly",
     "backoff-jitter"
   ],
   "author": "Ali Raza",
-  "homepage": "https://Ali-Raza-Arain.github.io/smart-fetch/",
+  "homepage": "https://Ali-Raza-Arain.github.io/fetch-smartly/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ali-Raza-Arain/smart-fetch.git"
+    "url": "git+https://github.com/Ali-Raza-Arain/fetch-smartly.git"
   },
   "bugs": {
-    "url": "https://github.com/Ali-Raza-Arain/smart-fetch/issues"
+    "url": "https://github.com/Ali-Raza-Arain/fetch-smartly/issues"
   },
   "license": "MIT",
   "engines": {

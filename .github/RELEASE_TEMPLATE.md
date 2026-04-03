@@ -1,4 +1,4 @@
-# smart-fetch v[VERSION] — [SHORT_TITLE]
+# fetch-smartly v[VERSION] — [SHORT_TITLE]
 
 ## What's New
 - <!-- List new features/changes -->
@@ -8,12 +8,12 @@
 
 ## Install / Upgrade
 ```bash
-npm install smart-fetch@[VERSION]
+npm install fetch-smartly@[VERSION]
 ```
 
 ## Quick Example
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 const res = await fetchWithRetry({
   url: 'https://api.example.com/data',
@@ -24,4 +24,4 @@ console.log(res.data);
 ```
 
 ## Full Changelog
-See [CHANGELOG.md](https://github.com/Ali-Raza-Arain/smart-fetch/blob/main/CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/Ali-Raza-Arain/fetch-smartly/blob/main/CHANGELOG.md)

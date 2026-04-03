@@ -10,7 +10,7 @@
 
 If you discover a security vulnerability, please **do not** open a public issue.
 
-Instead, report it privately by emailing the maintainer or using [GitHub's private vulnerability reporting](https://github.com/Ali-Raza-Arain/smart-fetch/security/advisories/new).
+Instead, report it privately by emailing the maintainer or using [GitHub's private vulnerability reporting](https://github.com/Ali-Raza-Arain/fetch-smartly/security/advisories/new).
 
 Please include:
 
@@ -23,4 +23,4 @@ You can expect an initial response within 48 hours. We will work with you to und
 
 ## Scope
 
-This policy covers the `smart-fetch` npm package. Third-party dependencies are out of scope but will be addressed if they impact this package.
+This policy covers the `fetch-smartly` npm package. Third-party dependencies are out of scope but will be addressed if they impact this package.

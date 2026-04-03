@@ -2,7 +2,7 @@
 
 ## Feature Matrix
 
-| Feature | smart-fetch | axios | ky | got | ofetch |
+| Feature | fetch-smartly | axios | ky | got | ofetch |
 |---------|:-:|:-:|:-:|:-:|:-:|
 | Zero dependencies | **Yes** | No (6) | No (2) | No (11) | No (4) |
 | Native fetch based | **Yes** | No (XMLHttpRequest) | Yes | No (http module) | Yes |
@@ -19,7 +19,7 @@
 | User signal composition | **Yes** | No | No | No | No |
 | Bundle size (min) | ~16KB | ~29KB | ~10KB | Node only | ~12KB |
 
-## When to Choose smart-fetch
+## When to Choose fetch-smartly
 
 - You need **zero dependencies** and care about supply chain security
 - You want **circuit breaker** and **deduplication** built-in, not as separate packages

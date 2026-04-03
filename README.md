@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://img.shields.io/npm/v/smart-fetch?style=color=blue&label=smart-fetch" alt="version" />
+  <img src="https://img.shields.io/npm/v/fetch-smartly?style=color=blue&label=fetch-smartly" alt="version" />
 </p>
 
-<h1 align="center">smart-fetch</h1>
+<h1 align="center">fetch-smartly</h1>
 
 <p align="center">
   <strong>A production-grade fetch wrapper that makes HTTP requests resilient, intelligent, and effortless.</strong><br/>
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="node" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-blue" alt="typescript" />
   <img src="https://img.shields.io/badge/tests-86%20passed-green" alt="tests" />
-  <a href="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch"><img src="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch/branch/main/graph/badge.svg" alt="codecov" /></a>
+  <a href="https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly"><img src="https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly/branch/main/graph/badge.svg" alt="codecov" /></a>
 </p>
 
 ---
@@ -25,7 +25,7 @@ The native `fetch` API gives you no help when things go wrong. Servers return 50
 
 ---
 
-## Why smart-fetch?
+## Why fetch-smartly?
 
 - **Zero dependencies** — built entirely on native Web APIs, no supply chain risk
 - **Intelligent retry** — exponential backoff with jitter, `Retry-After` header respect, never retries 4xx client errors
@@ -41,7 +41,7 @@ The native `fetch` API gives you no help when things go wrong. Servers return 50
 ## Table of Contents
 
 - [The Problem](#the-problem)
-- [Why smart-fetch?](#why-smart-fetch)
+- [Why fetch-smartly?](#why-fetch-smartly)
 - [How It Works](#how-it-works)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -89,7 +89,7 @@ The native `fetch` API gives you no help when things go wrong. Servers return 50
 ## Installation
 
 ```bash
-npm install smart-fetch
+npm install fetch-smartly
 ```
 
 ---
@@ -97,7 +97,7 @@ npm install smart-fetch
 ## Quick Start
 
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 const response = await fetchWithRetry({
   url: 'https://api.example.com/data',
@@ -147,7 +147,7 @@ import {
   TimeoutError,
   HttpError,
   RateLimitError,
-} from 'smart-fetch';
+} from 'fetch-smartly';
 
 try {
   await fetchWithRetry({ url: 'https://api.example.com/data' });
@@ -196,7 +196,7 @@ await fetchWithRetry({
 ## Circuit Breaker
 
 ```typescript
-import { CircuitBreaker, CircuitOpenError, fetchWithRetry } from 'smart-fetch';
+import { CircuitBreaker, CircuitOpenError, fetchWithRetry } from 'fetch-smartly';
 
 const breaker = new CircuitBreaker({
   enabled: true,
@@ -223,7 +223,7 @@ try {
 ## Request Deduplication
 
 ```typescript
-import { DedupManager, getDedupKey, isDedupEligible, fetchWithRetry } from 'smart-fetch';
+import { DedupManager, getDedupKey, isDedupEligible, fetchWithRetry } from 'fetch-smartly';
 
 const dedup = new DedupManager();
 
@@ -246,7 +246,7 @@ const [a, b] = await Promise.all([
 ## Offline Queue
 
 ```typescript
-import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'smart-fetch';
+import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'fetch-smartly';
 
 const queue = new OfflineQueue(new MemoryStorage());
 
@@ -287,13 +287,13 @@ try {
 
 ## Full API Reference
 
-[View full API docs](https://Ali-Raza-Arain.github.io/smart-fetch/guide/api-reference)
+[View full API docs](https://Ali-Raza-Arain.github.io/fetch-smartly/guide/api-reference)
 
 ---
 
 ## Comparison with Alternatives
 
-| Feature | smart-fetch | axios | ky | got |
+| Feature | fetch-smartly | axios | ky | got |
 |---------|:-:|:-:|:-:|:-:|
 | Zero dependencies | **Yes** | No | No | No |
 | Native fetch based | **Yes** | No | Yes | No |
@@ -326,7 +326,7 @@ We welcome contributions! Please read the [Contributing Guide](CONTRIBUTING.md) 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security Policy](SECURITY.md)
 
-Look for issues labeled [`good first issue`](https://github.com/Ali-Raza-Arain/smart-fetch/labels/good%20first%20issue) to get started.
+Look for issues labeled [`good first issue`](https://github.com/Ali-Raza-Arain/fetch-smartly/labels/good%20first%20issue) to get started.
 
 ---
 
@@ -351,8 +351,8 @@ If this package helps you, consider supporting its development:
 
 ## Contributors
 
-<a href="https://github.com/ali-raza-arain/smart-fetch/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ali-raza-arain/smart-fetch" alt="Contributors" />
+<a href="https://github.com/ali-raza-arain/fetch-smartly/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ali-raza-arain/fetch-smartly" alt="Contributors" />
 </a>
 
 ---

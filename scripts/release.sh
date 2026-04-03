@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================================
-# Release Script for smart-fetch
+# Release Script for fetch-smartly
 # Usage: ./scripts/release.sh [patch|minor|major]
 # Default: patch
 # ============================================================
@@ -53,7 +53,7 @@ echo "============================================"
 echo ""
 echo "Post-release checklist:"
 echo "  1. Update CHANGELOG.md with release details"
-echo "  2. Verify Codecov badge updated (https://codecov.io/gh/Ali-Raza-Arain/smart-fetch)"
-echo "  3. Verify docs deployed (https://Ali-Raza-Arain.github.io/smart-fetch/)"
+echo "  2. Verify Codecov badge updated (https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly)"
+echo "  3. Verify docs deployed (https://Ali-Raza-Arain.github.io/fetch-smartly/)"
 echo "  4. Update GitHub repo 'About' description if needed"
 echo ""

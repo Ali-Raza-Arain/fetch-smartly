@@ -28,7 +28,7 @@ The circuit breaker pattern prevents your application from repeatedly calling a 
 ## Usage
 
 ```typescript
-import { CircuitBreaker, CircuitOpenError, fetchWithRetry } from 'smart-fetch';
+import { CircuitBreaker, CircuitOpenError, fetchWithRetry } from 'fetch-smartly';
 
 const breaker = new CircuitBreaker({
   enabled: true,

@@ -1,17 +1,17 @@
 ---
-title: "Stop Writing Retry Logic for fetch() — Use smart-fetch Instead"
+title: "Stop Writing Retry Logic for fetch() — Use fetch-smartly Instead"
 published: false
 description: Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers
 tags: javascript, typescript, node, opensource
 ---
 
-# Stop Writing Retry Logic for fetch() — Use smart-fetch Instead
+# Stop Writing Retry Logic for fetch() — Use fetch-smartly Instead
 
 Every backend and frontend developer has been there. You call `fetch()`, and it works — until it doesn't. The API returns a 503. The network drops. A rate limit hits you with a 429. And `fetch` gives you... a generic error with no classification, no retry, no help.
 
 So you write retry logic. Again. With exponential backoff. And jitter. And timeout handling with `AbortController`. And then you realize you need the same thing in your next project.
 
-I built [smart-fetch](https://www.npmjs.com/package/smart-fetch) to fix this once and for all.
+I built [fetch-smartly](https://www.npmjs.com/package/fetch-smartly) to fix this once and for all.
 
 ## What It Does
 
@@ -44,7 +44,7 @@ It wraps native `fetch` with:
 ## Quick Start
 
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 const res = await fetchWithRetry({
   url: 'https://api.example.com/data',
@@ -73,9 +73,9 @@ console.log(res.duration); // 142ms
 
 ## Links
 
-- **npm**: [npmjs.com/package/smart-fetch](https://www.npmjs.com/package/smart-fetch)
-- **GitHub**: [github.com/Ali-Raza-Arain/smart-fetch](https://github.com/Ali-Raza-Arain/smart-fetch)
-- **Docs**: [Ali-Raza-Arain.github.io/smart-fetch](https://Ali-Raza-Arain.github.io/smart-fetch/)
+- **npm**: [npmjs.com/package/fetch-smartly](https://www.npmjs.com/package/fetch-smartly)
+- **GitHub**: [github.com/Ali-Raza-Arain/fetch-smartly](https://github.com/Ali-Raza-Arain/fetch-smartly)
+- **Docs**: [Ali-Raza-Arain.github.io/fetch-smartly](https://Ali-Raza-Arain.github.io/fetch-smartly/)
 
 ---
 

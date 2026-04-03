@@ -67,7 +67,7 @@ export class MemoryStorage implements QueueStorage {
 export class LocalStorageBackend implements QueueStorage {
   private readonly storageKey: string;
 
-  constructor(storageKey = 'smart-fetch:offline-queue') {
+  constructor(storageKey = 'fetch-smartly:offline-queue') {
     this.storageKey = storageKey;
   }
 

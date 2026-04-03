@@ -1,6 +1,6 @@
 # Error Handling
 
-Every error thrown by smart-fetch is a typed class extending `SmartFetchError`. Use `instanceof` to handle each failure case precisely.
+Every error thrown by fetch-smartly is a typed class extending `SmartFetchError`. Use `instanceof` to handle each failure case precisely.
 
 ## Error Hierarchy
 
@@ -24,7 +24,7 @@ import {
   HttpError,
   RateLimitError,
   CircuitOpenError,
-} from 'smart-fetch';
+} from 'fetch-smartly';
 
 try {
   await fetchWithRetry({ url: 'https://api.example.com/data' });

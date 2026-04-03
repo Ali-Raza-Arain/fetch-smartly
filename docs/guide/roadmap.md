@@ -25,4 +25,4 @@
 
 ## Contributing
 
-Have a feature idea? Open a [Feature Request](https://github.com/Ali-Raza-Arain/smart-fetch/issues/new?template=feature_request.yml) on GitHub.
+Have a feature idea? Open a [Feature Request](https://github.com/Ali-Raza-Arain/fetch-smartly/issues/new?template=feature_request.yml) on GitHub.

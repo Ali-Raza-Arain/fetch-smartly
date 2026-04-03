@@ -1,4 +1,4 @@
-# Contributing to smart-fetch
+# Contributing to fetch-smartly
 
 Thanks for your interest in contributing! This guide will help you get started.
 
@@ -14,8 +14,8 @@ Thanks for your interest in contributing! This guide will help you get started.
 
 ```bash
 # Fork and clone the repo
-git clone https://github.com/<your-username>/smart-fetch.git
-cd smart-fetch
+git clone https://github.com/<your-username>/fetch-smartly.git
+cd fetch-smartly
 
 # Install dependencies
 npm install
@@ -34,7 +34,7 @@ npm run lint
 
 ### Reporting Bugs
 
-Use the [Bug Report](https://github.com/Ali-Raza-Arain/smart-fetch/issues/new?template=bug_report.yml) template. Include:
+Use the [Bug Report](https://github.com/Ali-Raza-Arain/fetch-smartly/issues/new?template=bug_report.yml) template. Include:
 
 - Package version and Node.js version
 - Steps to reproduce
@@ -42,7 +42,7 @@ Use the [Bug Report](https://github.com/Ali-Raza-Arain/smart-fetch/issues/new?te
 
 ### Suggesting Features
 
-Use the [Feature Request](https://github.com/Ali-Raza-Arain/smart-fetch/issues/new?template=feature_request.yml) template.
+Use the [Feature Request](https://github.com/Ali-Raza-Arain/fetch-smartly/issues/new?template=feature_request.yml) template.
 
 ### Submitting Code
 
@@ -114,7 +114,7 @@ tests/          # Test files
 
 ## First-Time Contributors
 
-Look for issues labeled [`good first issue`](https://github.com/Ali-Raza-Arain/smart-fetch/labels/good%20first%20issue).
+Look for issues labeled [`good first issue`](https://github.com/Ali-Raza-Arain/fetch-smartly/labels/good%20first%20issue).
 
 ## Code of Conduct
 
@@ -126,4 +126,4 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ## Questions?
 
-Open a [Question](https://github.com/Ali-Raza-Arain/smart-fetch/issues/new?template=question.yml) issue. We're happy to help!
+Open a [Question](https://github.com/Ali-Raza-Arain/fetch-smartly/issues/new?template=question.yml) issue. We're happy to help!

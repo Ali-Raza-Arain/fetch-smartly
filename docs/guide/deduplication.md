@@ -1,6 +1,6 @@
 # Request Deduplication
 
-When multiple parts of your application fetch the same URL simultaneously, smart-fetch can ensure only one actual network request is made.
+When multiple parts of your application fetch the same URL simultaneously, fetch-smartly can ensure only one actual network request is made.
 
 ## How It Works
 
@@ -11,7 +11,7 @@ Only safe (idempotent) methods are eligible: **GET**, **HEAD**, **OPTIONS**. Mut
 ## Usage
 
 ```typescript
-import { DedupManager, getDedupKey, isDedupEligible, fetchWithRetry } from 'smart-fetch';
+import { DedupManager, getDedupKey, isDedupEligible, fetchWithRetry } from 'fetch-smartly';
 
 const dedup = new DedupManager();
 

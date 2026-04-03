@@ -1,10 +1,10 @@
 ---
 layout: home
-title: smart-fetch — Intelligent HTTP Client for Node.js & Browsers
+title: fetch-smartly — Intelligent HTTP Client for Node.js & Browsers
 titleTemplate: Resilient HTTP Made Effortless
 
 hero:
-  name: smart-fetch
+  name: fetch-smartly
   text: Resilient HTTP Made Effortless
   tagline: Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers
   actions:
@@ -13,10 +13,10 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/Ali-Raza-Arain/smart-fetch
+      link: https://github.com/Ali-Raza-Arain/fetch-smartly
     - theme: alt
       text: npm
-      link: https://www.npmjs.com/package/smart-fetch
+      link: https://www.npmjs.com/package/fetch-smartly
 
 features:
   - title: Intelligent Retry

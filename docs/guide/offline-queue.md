@@ -13,7 +13,7 @@ The offline queue lets you save failed requests and replay them when connectivit
 ## Usage
 
 ```typescript
-import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'smart-fetch';
+import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'fetch-smartly';
 
 // Node.js
 const queue = new OfflineQueue(new MemoryStorage());
@@ -25,7 +25,7 @@ const queue = new OfflineQueue(new LocalStorageBackend());
 ## Enqueue Failed Requests
 
 ```typescript
-import { fetchWithRetry, NetworkError } from 'smart-fetch';
+import { fetchWithRetry, NetworkError } from 'fetch-smartly';
 
 try {
   await fetchWithRetry({ url: 'https://api.example.com/submit', method: 'POST', body: '{"data":1}' });
@@ -57,7 +57,7 @@ Successful entries are removed automatically. Failed entries remain for the next
 ## Custom Storage
 
 ```typescript
-import type { QueueStorage, QueueEntry } from 'smart-fetch';
+import type { QueueStorage, QueueEntry } from 'fetch-smartly';
 
 class RedisStorage implements QueueStorage {
   getAll(): QueueEntry[] { /* ... */ }

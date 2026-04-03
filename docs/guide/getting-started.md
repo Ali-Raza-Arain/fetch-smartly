@@ -3,13 +3,13 @@
 ## Installation
 
 ```bash
-npm install smart-fetch
+npm install fetch-smartly
 ```
 
 ## Quick Start
 
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 const response = await fetchWithRetry({
   url: 'https://api.example.com/data',

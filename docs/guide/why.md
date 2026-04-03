@@ -1,4 +1,4 @@
-# Why smart-fetch?
+# Why fetch-smartly?
 
 ## The Problem
 
@@ -11,7 +11,7 @@ Most developers either:
 
 ## The Solution
 
-smart-fetch wraps the native `fetch` API with production-grade resilience patterns, **zero dependencies**, and full TypeScript support:
+fetch-smartly wraps the native `fetch` API with production-grade resilience patterns, **zero dependencies**, and full TypeScript support:
 
 - **Intelligent Retry** — Exponential backoff with jitter. Respects `Retry-After` headers. Never retries client errors (400, 401, 404).
 - **Typed Errors** — Every failure is a specific error class (`NetworkError`, `TimeoutError`, `HttpError`, `RateLimitError`) with structured metadata and `instanceof` support.

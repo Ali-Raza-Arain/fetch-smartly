@@ -12,7 +12,7 @@ body:
     id: version
     attributes:
       label: Package Version
-      description: What version of smart-fetch are you using?
+      description: What version of fetch-smartly are you using?
       placeholder: "1.0.0"
     validations:
       required: true
@@ -31,7 +31,7 @@ body:
       label: Steps to Reproduce
       description: Minimal steps or code to reproduce the issue.
       placeholder: |
-        1. Install smart-fetch
+        1. Install fetch-smartly
         2. Configure with ...
         3. Call ...
         4. See error

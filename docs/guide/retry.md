@@ -1,11 +1,11 @@
 # Retry & Backoff
 
-smart-fetch implements a robust retry strategy using exponential backoff with full jitter.
+fetch-smartly implements a robust retry strategy using exponential backoff with full jitter.
 
 ## Default Behavior
 
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 // Uses default retry policy: 3 retries, 1s base delay, 2x backoff, jitter enabled
 const res = await fetchWithRetry({ url: 'https://api.example.com/data' });
@@ -37,11 +37,11 @@ const res = await fetchWithRetry({ url: 'https://api.example.com/data' });
 
 ## Retry-After Header
 
-When a 429 response includes a `Retry-After` header, smart-fetch uses that delay instead of the computed backoff:
+When a 429 response includes a `Retry-After` header, fetch-smartly uses that delay instead of the computed backoff:
 
 ```typescript
 // If server responds with: Retry-After: 60
-// smart-fetch waits 60 seconds (capped at maxDelay)
+// fetch-smartly waits 60 seconds (capped at maxDelay)
 ```
 
 Both numeric seconds and HTTP-date formats are supported.

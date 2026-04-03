@@ -9,7 +9,7 @@
 
 ## Support This Project
 
-If **smart-fetch** helps you, consider supporting its development:
+If **fetch-smartly** helps you, consider supporting its development:
 
 
 <a href="https://github.com/sponsors/Ali-Raza-Arain" target="_blank">
@@ -22,11 +22,11 @@ If **smart-fetch** helps you, consider supporting its development:
 
 ## Contributors
 
-<a href="https://github.com/Ali-Raza-Arain/smart-fetch/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Ali-Raza-Arain/smart-fetch" alt="Contributors" />
+<a href="https://github.com/Ali-Raza-Arain/fetch-smartly/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Ali-Raza-Arain/fetch-smartly" alt="Contributors" />
 </a>
 
-Want to contribute? Check out the [GitHub repository](https://github.com/Ali-Raza-Arain/smart-fetch).
+Want to contribute? Check out the [GitHub repository](https://github.com/Ali-Raza-Arain/fetch-smartly).
 
 
 ## License

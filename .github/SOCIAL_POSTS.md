@@ -1,4 +1,4 @@
-# Social Posts for smart-fetch
+# Social Posts for fetch-smartly
 
 ## Reddit r/node and r/javascript
 
@@ -8,10 +8,10 @@
 
 Every production app needs retry logic, timeout handling, and error classification for HTTP requests. But `fetch` gives you none of that — just a generic error when things fail. You end up writing the same exponential backoff, abort controller timeout, and error parsing code in every project.
 
-I built `smart-fetch` — a zero-dependency fetch wrapper with intelligent retry, circuit breaker, request deduplication, and offline queue. Full TypeScript, works everywhere (Node 18+, browsers, edge runtimes).
+I built `fetch-smartly` — a zero-dependency fetch wrapper with intelligent retry, circuit breaker, request deduplication, and offline queue. Full TypeScript, works everywhere (Node 18+, browsers, edge runtimes).
 
 ```typescript
-import { fetchWithRetry } from 'smart-fetch';
+import { fetchWithRetry } from 'fetch-smartly';
 
 const res = await fetchWithRetry({
   url: 'https://api.example.com/data',
@@ -30,9 +30,9 @@ Features:
 - Under 16KB bundled, zero dependencies
 
 Links:
-- npm: https://www.npmjs.com/package/smart-fetch
-- GitHub: https://github.com/Ali-Raza-Arain/smart-fetch
-- Docs: https://Ali-Raza-Arain.github.io/smart-fetch/
+- npm: https://www.npmjs.com/package/fetch-smartly
+- GitHub: https://github.com/Ali-Raza-Arain/fetch-smartly
+- Docs: https://Ali-Raza-Arain.github.io/fetch-smartly/
 
 Would love feedback!
 
@@ -40,14 +40,14 @@ Would love feedback!
 
 ## Hacker News (Show HN)
 
-**Title:** Show HN: smart-fetch — Zero-dep fetch wrapper with retry, circuit breaker, and offline queue
+**Title:** Show HN: fetch-smartly — Zero-dep fetch wrapper with retry, circuit breaker, and offline queue
 
 **Body:**
 
 I built a Node.js/browser package that wraps the native fetch API with production-grade resilience — exponential backoff with jitter, Retry-After header respect, circuit breaker, request deduplication, and offline queue. Zero dependencies, strict TypeScript, under 16KB.
 
-npm: https://www.npmjs.com/package/smart-fetch
-GitHub: https://github.com/Ali-Raza-Arain/smart-fetch
+npm: https://www.npmjs.com/package/fetch-smartly
+GitHub: https://github.com/Ali-Raza-Arain/fetch-smartly
 
 ---
 
@@ -63,10 +63,10 @@ When a server returns 503, you get... a generic error.
 I built a fix. Thread
 
 **Tweet 2:**
-smart-fetch: a zero-dependency fetch wrapper with intelligent retry, circuit breaker, and typed errors.
+fetch-smartly: a zero-dependency fetch wrapper with intelligent retry, circuit breaker, and typed errors.
 
 ```
-npm install smart-fetch
+npm install fetch-smartly
 ```
 
 **Tweet 3:**
@@ -81,15 +81,15 @@ It supports:
 **Tweet 4:**
 Try it:
 
-npm: https://npmjs.com/package/smart-fetch
-GitHub: https://github.com/Ali-Raza-Arain/smart-fetch
-Docs: https://Ali-Raza-Arain.github.io/smart-fetch/
+npm: https://npmjs.com/package/fetch-smartly
+GitHub: https://github.com/Ali-Raza-Arain/fetch-smartly
+Docs: https://Ali-Raza-Arain.github.io/fetch-smartly/
 
 ---
 
 ## StackOverflow — Target Questions
 
-Search for these questions and answer mentioning smart-fetch where genuinely helpful:
+Search for these questions and answer mentioning fetch-smartly where genuinely helpful:
 
 - "How to retry fetch requests in JavaScript"
 - "Exponential backoff with fetch API"
