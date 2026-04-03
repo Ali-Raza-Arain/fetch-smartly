@@ -66,20 +66,20 @@ The native `fetch` API gives you no help when things go wrong. Servers return 50
 
 ```
   Request ──► Timeout Guard ──► fetch() ──► Response Parser
-     │              │               │              │
+     │              │               │               │
      │              │          on failure           │
-     │              │               ▼              │
+     │              │               ▼               │
      │              │       Failure Analyzer        │
      │              │        (classify error)       │
-     │              │               │              │
+     │              │               │               │
      │              │          retryable?           │
-     │              │          ▼       ▼           │
-     │              │        YES      NO ──► throw │
-     │              │         │                    │
+     │              │          ▼       ▼            │
+     │              │        YES      NO ──► throw  │
+     │              │         │                     │
      │              │    Backoff Manager            │
      │              │    (delay + jitter)           │
-     │              │         │                    │
-     │              └─── retry loop ◄──┘           │
+     │              │         │                     │
+     │              └─── retry loop ◄──┘            │
      │                                              │
      └──────────── SmartFetchResponse ◄─────────────┘
 ```
