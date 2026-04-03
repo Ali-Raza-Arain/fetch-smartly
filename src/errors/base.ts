@@ -1,7 +1,7 @@
 import type { HttpMethod } from '../types/index.js';
 
 /**
- * Base error for all smart-fetch-pro errors.
+ * Base error for all smart-fetch errors.
  * All subclasses carry structured metadata about the failed request.
  */
 export abstract class SmartFetchError extends Error {

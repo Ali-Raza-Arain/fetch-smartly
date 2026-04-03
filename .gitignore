@@ -49,6 +49,13 @@ temp/
 
 # Test artifacts
 jest-cache/
+
+# VitePress
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+
+# Package tarballs
+*.tgz
 # proj-track
 .proj-track.json
 .proj-track.json.paused

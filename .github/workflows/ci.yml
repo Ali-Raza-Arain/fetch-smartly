@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test with coverage
+        run: npx vitest run --reporter=json --outputFile=test-results.json --coverage --coverage.reporter=json --coverage.reporter=text
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
+
+      - name: Upload coverage reports to Codecov
+        if: matrix.node-version == 22
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Update test badge in README
+        if: matrix.node-version == 22 && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          PASSED=$(node -e "const r=JSON.parse(require('fs').readFileSync('test-results.json','utf8')); console.log(r.numPassedTests)")
+          TOTAL=$(node -e "const r=JSON.parse(require('fs').readFileSync('test-results.json','utf8')); console.log(r.numTotalTests)")
+          if [ "$PASSED" -eq "$TOTAL" ]; then
+            COLOR="green"
+            LABEL="${PASSED}%20passed"
+          else
+            COLOR="red"
+            LABEL="${PASSED}%2F${TOTAL}%20passed"
+          fi
+          sed -i "s|tests-[0-9]*%20passed-[a-z]*|tests-${LABEL}-${COLOR}|g" README.md
+          sed -i "s|tests-[0-9]*%2F[0-9]*%20passed-[a-z]*|tests-${LABEL}-${COLOR}|g" README.md
+          if git diff --quiet README.md; then
+            echo "Badge already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: update test badge to ${PASSED}/${TOTAL} passed"
+            git push
+          fi
+
+      - name: Build
+        run: npm run build

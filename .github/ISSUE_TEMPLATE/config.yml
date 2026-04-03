@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://Ali-Raza-Arain.github.io/smart-fetch/
+    about: Check the documentation before opening an issue.

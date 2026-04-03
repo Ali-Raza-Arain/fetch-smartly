@@ -1,28 +1,103 @@
-# smart-fetch-pro
+<p align="center">
+  <img src="https://img.shields.io/npm/v/smart-fetch?style=for-the-badge&color=blue&label=smart-fetch" alt="version" />
+</p>
 
-Production-grade, zero-dependency, isomorphic HTTP client wrapper around the native `fetch` API. Built with strict TypeScript for Node.js (v18+), browsers, and edge runtimes.
+<h1 align="center">smart-fetch</h1>
 
-## Features
+<p align="center">
+  <strong>A production-grade fetch wrapper that makes HTTP requests resilient, intelligent, and effortless.</strong><br/>
+  Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers
+</p>
 
-- **Zero dependencies** — uses only native Web APIs
-- **Intelligent retry** — exponential backoff with jitter, `Retry-After` header respect
-- **Smart error classification** — typed errors for Network, Timeout, HTTP 4xx/5xx, Rate Limit
-- **Circuit breaker** — automatic failure isolation with open/half-open/closed states
-- **Request deduplication** — concurrent identical GET/HEAD requests share a single fetch
-- **Offline queue** — queue failed requests for replay when connectivity returns
-- **Isomorphic** — works in Node.js, browsers, Cloudflare Workers, Deno, Bun
-- **Strict TypeScript** — full type safety, no `any`
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="license" />
+  <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=for-the-badge" alt="node" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="typescript" />
+  <img src="https://img.shields.io/badge/tests-86%20passed-green?style=for-the-badge&logo=vitest&logoColor=white" alt="tests" />
+  <a href="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch"><img src="https://codecov.io/gh/Ali-Raza-Arain/smart-fetch/branch/main/graph/badge.svg?style=for-the-badge" alt="codecov" /></a>
+</p>
 
-## Install
+---
+
+## The Problem
+
+The native `fetch` API gives you no help when things go wrong. Servers return 503, rate limits hit 429, networks drop, timeouts expire — and `fetch` just throws a generic error. You end up writing the same retry logic, timeout management, and error classification in every project, or pulling in heavyweight libraries with dozens of dependencies.
+
+---
+
+## Why smart-fetch?
+
+- **Zero dependencies** — built entirely on native Web APIs, no supply chain risk
+- **Intelligent retry** — exponential backoff with jitter, `Retry-After` header respect, never retries 4xx client errors
+- **Typed error hierarchy** — `NetworkError`, `TimeoutError`, `HttpError`, `RateLimitError` with `instanceof` support
+- **Circuit breaker** — automatic failure isolation (open/half-open/closed)
+- **Request deduplication** — concurrent identical GET/HEAD requests share one fetch
+- **Offline queue** — queue failed requests for replay with pluggable storage
+- **Isomorphic** — Node.js 18+, browsers, Cloudflare Workers, Deno, Bun
+- **Strict TypeScript** — no `any`, full type safety, JSDoc on every export
+
+---
+
+## Table of Contents
+
+- [The Problem](#the-problem)
+- [Why smart-fetch?](#why-smart-fetch)
+- [How It Works](#how-it-works)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration Options](#configuration-options)
+- [Error Handling](#error-handling)
+- [Retry with Callbacks](#retry-with-callbacks)
+- [Circuit Breaker](#circuit-breaker)
+- [Request Deduplication](#request-deduplication)
+- [Offline Queue](#offline-queue)
+- [User Abort](#user-abort)
+- [Full API Reference](#full-api-reference)
+- [Comparison with Alternatives](#comparison-with-alternatives)
+- [Running Tests](#running-tests)
+- [Contributing](#contributing)
+- [Security](#security)
+- [Support](#support)
+- [License](#license)
+
+---
+
+## How It Works
+
+```
+  Request ──► Timeout Guard ──► fetch() ──► Response Parser
+     │              │               │              │
+     │              │          on failure           │
+     │              │               ▼              │
+     │              │       Failure Analyzer        │
+     │              │        (classify error)       │
+     │              │               │              │
+     │              │          retryable?           │
+     │              │          ▼       ▼           │
+     │              │        YES      NO ──► throw │
+     │              │         │                    │
+     │              │    Backoff Manager            │
+     │              │    (delay + jitter)           │
+     │              │         │                    │
+     │              └─── retry loop ◄──┘           │
+     │                                              │
+     └──────────── SmartFetchResponse ◄─────────────┘
+```
+
+---
+
+## Installation
 
 ```bash
-npm install smart-fetch-pro
+npm install smart-fetch
 ```
+
+---
 
 ## Quick Start
 
-```ts
-import { fetchWithRetry } from 'smart-fetch-pro';
+```typescript
+import { fetchWithRetry } from 'smart-fetch';
 
 const response = await fetchWithRetry({
   url: 'https://api.example.com/data',
@@ -30,79 +105,49 @@ const response = await fetchWithRetry({
   timeout: 5000,
 });
 
-console.log(response.data);   // parsed JSON or text
-console.log(response.status); // 200
+console.log(response.data);    // parsed JSON or text
+console.log(response.status);  // 200
 console.log(response.retries); // 0
+console.log(response.duration); // 142 (ms)
 ```
 
-## API
+---
 
-### `fetchWithRetry<T>(options: SmartFetchOptions): Promise<SmartFetchResponse<T>>`
+## Configuration Options
 
-Primary entry point. Executes a fetch with automatic retry on retryable failures.
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `url` | `string` | *required* | The URL to fetch |
+| `method` | `HttpMethod` | `'GET'` | HTTP method |
+| `timeout` | `number` | `10000` | Request timeout in ms |
+| `retry.maxRetries` | `number` | `3` | Maximum retry attempts |
+| `retry.baseDelay` | `number` | `1000` | Base backoff delay in ms |
+| `retry.maxDelay` | `number` | `30000` | Maximum delay cap in ms |
+| `retry.backoffFactor` | `number` | `2` | Exponential multiplier |
+| `retry.jitter` | `boolean` | `true` | Randomize delay |
+| `retry.retryOn` | `number[]` | `[408,429,500,502,503,504]` | Status codes to retry |
+| `retry.retryOnNetworkError` | `boolean` | `true` | Retry on network failures |
+| `retry.shouldRetry` | `function` | `undefined` | Custom retry predicate |
+| `signal` | `AbortSignal` | `undefined` | User-provided abort signal |
+| `onRetry` | `function` | `undefined` | Callback before each retry |
+| `debug` | `boolean` | `false` | Verbose logging |
 
-### `executeRequest<T>(options: SmartFetchOptions): Promise<SmartFetchResponse<T>>`
+All native `RequestInit` options (`headers`, `body`, `credentials`, etc.) are also supported.
 
-Low-level single request (no retry). Use when you want full control over retry logic.
-
-### `SmartFetchOptions`
-
-```ts
-{
-  url: string;                    // Required
-  method?: HttpMethod;            // Default: 'GET'
-  timeout?: number;               // Default: 10000 (ms)
-  retry?: Partial<RetryPolicy>;   // Retry configuration
-  circuitBreaker?: Partial<CircuitBreakerPolicy>;
-  deduplicate?: boolean;          // Default: true for GET/HEAD
-  signal?: AbortSignal;           // User-provided abort signal
-  onRetry?: (ctx: RetryContext) => void;
-  debug?: boolean;                // Enable verbose logging
-  // ...all native RequestInit options (headers, body, etc.)
-}
-```
-
-### `RetryPolicy`
-
-```ts
-{
-  maxRetries: 3,          // Maximum retry attempts
-  baseDelay: 1000,        // Base delay in ms
-  maxDelay: 30000,        // Max delay cap in ms
-  backoffFactor: 2,       // Exponential multiplier
-  jitter: true,           // Add randomness to delay
-  retryOn: [408, 429, 500, 502, 503, 504],
-  retryOnNetworkError: true,
-  shouldRetry?: (ctx: RetryContext) => boolean,  // Custom override
-}
-```
-
-### `SmartFetchResponse<T>`
-
-```ts
-{
-  data: T;              // Parsed response body
-  status: number;       // HTTP status code
-  statusText: string;
-  headers: Headers;
-  retries: number;      // Retry attempts before success
-  duration: number;     // Total elapsed ms
-  ok: boolean;
-}
-```
+---
 
 ## Error Handling
 
 All errors extend `SmartFetchError` and support `instanceof` checks:
 
-```ts
+```typescript
 import {
   fetchWithRetry,
   NetworkError,
   TimeoutError,
   HttpError,
   RateLimitError,
-} from 'smart-fetch-pro';
+} from 'smart-fetch';
 
 try {
   await fetchWithRetry({ url: 'https://api.example.com/data' });
@@ -127,39 +172,39 @@ try {
 | `RateLimitError` | `ERR_RATE_LIMIT` | Yes | `retryAfter` |
 | `CircuitOpenError` | `ERR_CIRCUIT_OPEN` | No | `resetAt` |
 
+---
+
 ## Retry with Callbacks
 
-```ts
+```typescript
 await fetchWithRetry({
   url: 'https://api.example.com/data',
   retry: {
     maxRetries: 5,
     baseDelay: 500,
-    shouldRetry: (ctx) => {
-      // Stop retrying after 3 attempts for specific errors
-      return ctx.attempt < 3;
-    },
+    shouldRetry: (ctx) => ctx.attempt < 3,
   },
   onRetry: (ctx) => {
     console.log(`Attempt ${ctx.attempt}/${ctx.maxRetries}, waiting ${ctx.delay}ms`);
   },
-  debug: true, // Logs retry details to console.debug
+  debug: true,
 });
 ```
 
+---
+
 ## Circuit Breaker
 
-```ts
-import { CircuitBreaker, CircuitOpenError } from 'smart-fetch-pro';
+```typescript
+import { CircuitBreaker, CircuitOpenError, fetchWithRetry } from 'smart-fetch';
 
 const breaker = new CircuitBreaker({
   enabled: true,
-  failureThreshold: 5,   // Open after 5 consecutive failures
-  resetTimeout: 30000,    // Try half-open after 30s
-  halfOpenMaxAttempts: 1, // Allow 1 probe request
+  failureThreshold: 5,
+  resetTimeout: 30000,
+  halfOpenMaxAttempts: 1,
 });
 
-// Before each request:
 try {
   breaker.allowRequest(url, method);
   const res = await fetchWithRetry({ url });
@@ -173,39 +218,36 @@ try {
 }
 ```
 
+---
+
 ## Request Deduplication
 
-```ts
-import { DedupManager, getDedupKey, isDedupEligible } from 'smart-fetch-pro';
+```typescript
+import { DedupManager, getDedupKey, isDedupEligible, fetchWithRetry } from 'smart-fetch';
 
 const dedup = new DedupManager();
 
-async function deduplicatedFetch(options) {
-  const method = options.method ?? 'GET';
-  if (!isDedupEligible(method)) {
-    return fetchWithRetry(options);
-  }
-
-  const key = getDedupKey(method, options.url);
-  const inflight = dedup.get(key);
-  if (inflight) return inflight;
-
-  return dedup.track(key, fetchWithRetry(options));
+async function deduplicatedFetch(url: string) {
+  const key = getDedupKey('GET', url);
+  const existing = dedup.get(key);
+  if (existing) return existing;
+  return dedup.track(key, fetchWithRetry({ url }));
 }
 
-// These two calls result in only ONE actual fetch:
+// Both resolve with the same response from a single fetch:
 const [a, b] = await Promise.all([
-  deduplicatedFetch({ url: 'https://api.example.com/data' }),
-  deduplicatedFetch({ url: 'https://api.example.com/data' }),
+  deduplicatedFetch('https://api.example.com/data'),
+  deduplicatedFetch('https://api.example.com/data'),
 ]);
 ```
 
+---
+
 ## Offline Queue
 
-```ts
-import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'smart-fetch-pro';
+```typescript
+import { OfflineQueue, MemoryStorage, LocalStorageBackend } from 'smart-fetch';
 
-// Use MemoryStorage (Node) or LocalStorageBackend (Browser)
 const queue = new OfflineQueue(new MemoryStorage());
 
 // Enqueue a failed request
@@ -223,12 +265,12 @@ const successes = await queue.replay(async (entry) => {
 console.log(`Replayed ${successes}/${queue.size} requests`);
 ```
 
+---
+
 ## User Abort
 
-```ts
+```typescript
 const controller = new AbortController();
-
-// Cancel after 1 second
 setTimeout(() => controller.abort(), 1000);
 
 try {
@@ -241,6 +283,80 @@ try {
 }
 ```
 
+---
+
+## Full API Reference
+
+[View full API docs](https://Ali-Raza-Arain.github.io/smart-fetch/guide/api-reference)
+
+---
+
+## Comparison with Alternatives
+
+| Feature | smart-fetch | axios | ky | got |
+|---------|:-:|:-:|:-:|:-:|
+| Zero dependencies | **Yes** | No | No | No |
+| Native fetch based | **Yes** | No | Yes | No |
+| Isomorphic | **Yes** | Yes | Yes | Node only |
+| Edge runtime support | **Yes** | No | Yes | No |
+| Strict TypeScript | **Yes** | Partial | Yes | Yes |
+| Retry with backoff | **Yes** | Plugin | Yes | Yes |
+| Retry-After respect | **Yes** | No | No | No |
+| Circuit breaker | **Yes** | No | No | No |
+| Request deduplication | **Yes** | No | No | No |
+| Offline queue | **Yes** | No | No | No |
+| Typed error hierarchy | **Yes** | Partial | Partial | Yes |
+
+---
+
+## Running Tests
+
+```bash
+npm test
+```
+
+86 tests across 6 test suites covering errors, request engine, retry, circuit breaker, deduplication, and offline queue.
+
+---
+
+## Contributing
+
+We welcome contributions! Please read the [Contributing Guide](CONTRIBUTING.md) before submitting a PR.
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+
+Look for issues labeled [`good first issue`](https://github.com/Ali-Raza-Arain/smart-fetch/labels/good%20first%20issue) to get started.
+
+---
+
+## Security
+
+To report vulnerabilities, please see our [Security Policy](SECURITY.md).
+
+---
+
+## Support
+
+If this package helps you, consider supporting its development:
+
+<a href="https://github.com/sponsors/Ali-Raza-Arain">
+  <img src="https://img.shields.io/badge/Sponsor_on_GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors" />
+</a>
+<a href="https://buymeacoffee.com/alirazaarain">
+  <img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee" />
+</a>
+
+---
+
+## Contributors
+
+<a href="https://github.com/Ali-Raza-Arain/smart-fetch/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Ali-Raza-Arain/smart-fetch" alt="Contributors" />
+</a>
+
+---
+
 ## License
 
-MIT
+[MIT](https://opensource.org/licenses/MIT) — Made by [Ali Raza](https://github.com/Ali-Raza-Arain)

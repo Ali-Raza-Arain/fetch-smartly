@@ -105,7 +105,7 @@ export async function fetchWithRetry<T = unknown>(
         const category = classifyFailure(error);
         // eslint-disable-next-line no-console
         console.debug(
-          `[smart-fetch-pro] Retry ${attempt + 1}/${policy.maxRetries} after ${Math.round(backoffDelay)}ms (${category})`,
+          `[smart-fetch] Retry ${attempt + 1}/${policy.maxRetries} after ${Math.round(backoffDelay)}ms (${category})`,
         );
       }
 

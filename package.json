@@ -1,7 +1,7 @@
 {
-  "name": "smart-fetch-pro",
-  "version": "0.1.0",
-  "description": "Production-grade, zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue.",
+  "name": "smart-fetch",
+  "version": "1.0.0",
+  "description": "Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,29 +19,59 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "fetch",
+    "http",
+    "http-client",
+    "retry",
+    "exponential-backoff",
+    "circuit-breaker",
+    "rate-limit",
+    "timeout",
+    "abort",
+    "isomorphic",
+    "node-fetch",
+    "browser-fetch",
+    "offline-queue",
+    "request-deduplication",
+    "zero-dependency",
+    "typescript",
+    "fetch-wrapper",
+    "resilient-http",
+    "smart-fetch",
+    "backoff-jitter"
+  ],
+  "author": "Ali Raza",
+  "homepage": "https://Ali-Raza-Arain.github.io/smart-fetch/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ali-Raza-Arain/smart-fetch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ali-Raza-Arain/smart-fetch/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.7.0",
+    "vitepress": "^1.6.0",
     "vitest": "^3.1.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "license": "MIT",
-  "keywords": [
-    "fetch",
-    "http",
-    "retry",
-    "circuit-breaker",
-    "isomorphic"
-  ]
+  }
 }
