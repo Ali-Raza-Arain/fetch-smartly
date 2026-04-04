@@ -14,7 +14,8 @@
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="node" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-blue" alt="typescript" />
   <img src="https://img.shields.io/badge/tests-86%20passed-green" alt="tests" />
-  <a href="https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly"><img src="https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly/branch/main/graph/badge.svg" alt="codecov" /></a>
+  <img src="https://codecov.io/gh/Ali-Raza-Arain/fetch-smartly/branch/main/graph/badge.svg" alt="codecov" />
+  <img src="https://img.shields.io/npm/dt/fetch-smartly?style=flat&color=blue&label=downloads" alt="downloads" />
 </p>
 
 ---
