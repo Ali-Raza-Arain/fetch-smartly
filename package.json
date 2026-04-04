@@ -1,6 +1,6 @@
 {
   "name": "fetch-smartly",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Zero-dependency, isomorphic HTTP client with intelligent retry, circuit breaker, and offline queue for Node.js and browsers",
   "type": "module",
   "main": "./dist/index.cjs",
